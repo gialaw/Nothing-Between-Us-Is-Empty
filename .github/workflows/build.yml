@@ -1,0 +1,29 @@
+name: Build C++
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile C++
+        run: |
+          g++ -std=c++20 -O2 -Wall -Wextra main.cpp -o mycelial_sim
+
+      - name: Run simulation
+        run: |
+          ./mycelial_sim
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulation-results
+          path: results.csv
