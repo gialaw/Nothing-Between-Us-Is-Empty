@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Mycelial Coordination Research Interface
+</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+
+:root {
+
+    --background: #050608;
+    --panel: #090c11;
+    --panel2: #0d1118;
+
+    --line: rgba(255,255,255,0.16);
+    --line-bright: rgba(255,255,255,0.34);
+
+    --text: #f2f0ea;
+    --muted: #9298a3;
+
+    --current: #aeb4bd;
+    --mycelial: #d6c9a8;
+
+    --danger: #d17b7b;
+
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    margin: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            #10151e 0%,
+            #050608 48%
+        );
+
+    color: var(--text);
+
+    font-family:
+        "Times New Roman",
+        Times,
+        serif;
+
+    overflow-x: hidden;
+}
+
+
+/* --------------------------------------------------
+   HEADER
+-------------------------------------------------- */
+
+header {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    padding: 8vw;
+
+    border-bottom: 1px solid var(--line);
+
+}
+
+
+.eyebrow {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 11px;
+
+    letter-spacing: 0.24em;
+
+    color: var(--muted);
+
+    text-transform: uppercase;
+
+    margin-bottom: 25px;
+
+}
+
+
+h1 {
+
+    font-family:
+        "Times New Roman",
+        Times,
+        serif;
+
+    font-weight: 400;
+
+    font-size:
+        clamp(52px, 8vw, 120px);
+
+    line-height: 0.9;
+
+    max-width: 1000px;
+
+    margin: 0;
+
+    letter-spacing: -0.045em;
+
+}
+
+
+.subtitle {
+
+    max-width: 650px;
+
+    margin-top: 35px;
+
+    color: #b8bdc7;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+
+}
+
+
+.scroll {
+
+    margin-top: 80px;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+    letter-spacing: 0.2em;
+
+    color: var(--muted);
+
+}
+
+
+/* --------------------------------------------------
+   COMPARISON
+-------------------------------------------------- */
+
+.comparison {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    min-height: 100vh;
+
+    border-bottom: 1px solid var(--line);
+
+}
+
+
+.panel {
+
+    position: relative;
+
+    min-height: 850px;
+
+    overflow: hidden;
+
+}
+
+
+.panel:first-child {
+
+    border-right:
+        1px solid var(--line);
+
+}
+
+
+.panel-header {
+
+    padding: 28px 32px;
+
+    border-bottom:
+        1px solid var(--line);
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.panel-number {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+    color: var(--muted);
+
+}
+
+
+.panel-title {
+
+    font-size: 30px;
+
+    margin-top: 8px;
+
+}
+
+
+.panel-status {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 9px;
+
+    letter-spacing: 0.14em;
+
+    padding: 8px 10px;
+
+    border:
+        1px solid var(--line-bright);
+
+    color: var(--muted);
+
+}
+
+
+/* --------------------------------------------------
+   NETWORK
+-------------------------------------------------- */
+
+.network {
+
+    height: 650px;
+
+    position: relative;
+
+    cursor: grab;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        42px 42px;
+
+}
+
+
+.network:active {
+
+    cursor: grabbing;
+
+}
+
+
+.network-inner {
+
+    position: absolute;
+
+    width: 100%;
+
+    height: 100%;
+
+    transform-origin: center;
+
+    transition:
+        transform 0.2s ease;
+
+}
+
+
+svg {
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+
+.node {
+
+    cursor: pointer;
+
+}
+
+
+.node-circle {
+
+    fill: #090c11;
+
+    stroke:
+        rgba(255,255,255,0.65);
+
+    stroke-width: 1.2;
+
+}
+
+
+.node:hover .node-circle {
+
+    fill: #171c25;
+
+    stroke:
+        white;
+
+    stroke-width: 2;
+
+}
+
+
+.node-label {
+
+    fill: #e9e7e2;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+}
+
+
+.node-sub {
+
+    fill: #858b96;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 7px;
+
+}
+
+
+.connection {
+
+    stroke:
+        rgba(255,255,255,0.18);
+
+    stroke-width: 1;
+
+}
+
+
+.signal {
+
+    fill:
+        rgba(255,255,255,0.8);
+
+}
+
+
+/* --------------------------------------------------
+   CONTROLS
+-------------------------------------------------- */
+
+.controls {
+
+    position: absolute;
+
+    bottom: 25px;
+
+    right: 25px;
+
+    display: flex;
+
+    gap: 6px;
+
+}
+
+
+.control {
+
+    width: 34px;
+
+    height: 34px;
+
+    border:
+        1px solid var(--line);
+
+    background:
+        rgba(5,6,8,0.9);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+}
+
+
+.control:hover {
+
+    border-color:
+        white;
+
+}
+
+
+/* --------------------------------------------------
+   DESCRIPTION
+-------------------------------------------------- */
+
+.description {
+
+    padding:
+        28px 32px 40px;
+
+    border-top:
+        1px solid var(--line);
+
+}
+
+
+.description-label {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 9px;
+
+    letter-spacing: 0.18em;
+
+    color: var(--muted);
+
+    margin-bottom: 12px;
+
+}
+
+
+.description p {
+
+    max-width: 680px;
+
+    color: #b5bac3;
+
+    font-size: 15px;
+
+    line-height: 1.65;
+
+}
+
+
+/* --------------------------------------------------
+   DETAIL PANEL
+-------------------------------------------------- */
+
+.detail {
+
+    position: fixed;
+
+    right: 0;
+
+    top: 0;
+
+    width:
+        min(450px, 90vw);
+
+    height: 100vh;
+
+    background:
+        rgba(7,9,13,0.97);
+
+    border-left:
+        1px solid var(--line);
+
+    transform:
+        translateX(100%);
+
+    transition:
+        transform 0.35s ease;
+
+    z-index: 100;
+
+    padding: 35px;
+
+    overflow-y: auto;
+
+}
+
+
+.detail.open {
+
+    transform:
+        translateX(0);
+
+}
+
+
+.close {
+
+    position: absolute;
+
+    top: 25px;
+
+    right: 25px;
+
+    background: none;
+
+    border: none;
+
+    color: white;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+}
+
+
+.detail-kicker {
+
+    margin-top: 50px;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    letter-spacing: 0.15em;
+
+}
+
+
+.detail h2 {
+
+    font-size: 38px;
+
+    font-weight: 400;
+
+}
+
+
+.detail p {
+
+    color: #b7bcc5;
+
+    line-height: 1.7;
+
+}
+
+
+.detail-meta {
+
+    margin-top: 30px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid var(--line);
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+    line-height: 2;
+
+    color: #8e949e;
+
+}
+
+
+/* --------------------------------------------------
+   METRICS
+-------------------------------------------------- */
+
+.metrics {
+
+    padding: 100px 6vw;
+
+    border-bottom:
+        1px solid var(--line);
+
+}
+
+
+.section-title {
+
+    font-size: 46px;
+
+    font-weight: 400;
+
+    margin-bottom: 55px;
+
+}
+
+
+.metric-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    border-top:
+        1px solid var(--line);
+
+    border-left:
+        1px solid var(--line);
+
+}
+
+
+.metric {
+
+    padding: 30px;
+
+    min-height: 180px;
+
+    border-right:
+        1px solid var(--line);
+
+    border-bottom:
+        1px solid var(--line);
+
+}
+
+
+.metric-name {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 9px;
+
+    color: var(--muted);
+
+    letter-spacing: 0.12em;
+
+}
+
+
+.metric-value {
+
+    font-size: 34px;
+
+    margin-top: 25px;
+
+}
+
+
+.metric-note {
+
+    margin-top: 12px;
+
+    font-size: 13px;
+
+    color: #858b95;
+
+}
+
+
+/* --------------------------------------------------
+   SOURCES
+-------------------------------------------------- */
+
+.sources {
+
+    padding: 100px 6vw;
+
+}
+
+
+.source-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 1px;
+
+    background:
+        var(--line);
+
+    border:
+        1px solid var(--line);
+
+}
+
+
+.source {
+
+    background:
+        var(--background);
+
+    padding: 28px;
+
+    min-height: 190px;
+
+    text-decoration: none;
+
+    color: white;
+
+    transition:
+        background 0.2s ease;
+
+}
+
+
+.source:hover {
+
+    background:
+        #0d1118;
+
+}
+
+
+.source-type {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 9px;
+
+    color: var(--muted);
+
+    letter-spacing: 0.15em;
+
+}
+
+
+.source h3 {
+
+    font-size: 24px;
+
+    font-weight: 400;
+
+    margin:
+        25px 0 10px;
+
+}
+
+
+.source p {
+
+    color: #858b95;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+}
+
+
+/* --------------------------------------------------
+   AI ASSISTANT
+-------------------------------------------------- */
+
+.ai-button {
+
+    position: fixed;
+
+    bottom: 28px;
+
+    right: 28px;
+
+    z-index: 90;
+
+    padding:
+        14px 18px;
+
+    background:
+        #eeeae0;
+
+    color:
+        #070809;
+
+    border: none;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+
+}
+
+
+.ai-panel {
+
+    position: fixed;
+
+    right: 25px;
+
+    bottom: 80px;
+
+    width:
+        min(430px, calc(100vw - 50px));
+
+    height: 570px;
+
+    background:
+        #090c11;
+
+    border:
+        1px solid var(--line-bright);
+
+    z-index: 89;
+
+    display: none;
+
+    flex-direction: column;
+
+}
+
+
+.ai-panel.open {
+
+    display: flex;
+
+}
+
+
+.ai-header {
+
+    padding: 20px;
+
+    border-bottom:
+        1px solid var(--line);
+
+    display: flex;
+
+    justify-content: space-between;
+
+}
+
+
+.ai-title {
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+    letter-spacing: 0.15em;
+
+}
+
+
+.ai-status {
+
+    color: #89917f;
+
+    font-size: 9px;
+
+}
+
+
+.chat {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 20px;
+
+}
+
+
+.message {
+
+    margin-bottom: 20px;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+}
+
+
+.message.ai {
+
+    color: #c5c9d0;
+
+}
+
+
+.message.user {
+
+    color: white;
+
+}
+
+
+.ai-input {
+
+    border-top:
+        1px solid var(--line);
+
+    display: flex;
+
+}
+
+
+.ai-input input {
+
+    flex: 1;
+
+    background: transparent;
+
+    border: none;
+
+    outline: none;
+
+    padding: 18px;
+
+    color: white;
+
+    font-family:
+        "Times New Roman",
+        Times,
+        serif;
+
+}
+
+
+.ai-input button {
+
+    width: 70px;
+
+    background: transparent;
+
+    border: none;
+
+    border-left:
+        1px solid var(--line);
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+/* --------------------------------------------------
+   MOBILE
+-------------------------------------------------- */
+
+@media(max-width: 850px) {
+
+    .comparison {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .panel:first-child {
+
+        border-right: none;
+
+        border-bottom:
+            1px solid var(--line);
+
+    }
+
+    .metric-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .source-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="eyebrow">
+        SPACE TRAFFIC COORDINATION / RESEARCH INTERFACE
+    </div>
+
+    <h1>
+        Intelligence<br>
+        Without a Center
+    </h1>
+
+    <div class="subtitle">
+
+        A comparative simulation of conventional
+        spacecraft collision-avoidance coordination
+        and a proposed mycelium-inspired distributed
+        architecture.
+
+    </div>
+
+    <div class="scroll">
+        SCROLL TO ENTER THE SYSTEM ↓
+    </div>
+
+</header>
+
+
+
+<!-- ==================================================
+     SIDE BY SIDE SYSTEM
+================================================== -->
+
+<section class="comparison">
+
+
+<!-- CURRENT SYSTEM -->
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <div class="panel-number">
+                01 / CURRENT
+            </div>
+
+            <div class="panel-title">
+                Centralized Coordination
+            </div>
+
+        </div>
+
+        <div class="panel-status">
+            DOCUMENTED
+        </div>
+
+    </div>
+
+
+    <div class="network"
+         id="currentNetwork">
+
+        <div class="network-inner"
+             id="currentInner">
+
+            <svg viewBox="0 0 700 650">
+
+
+                <!-- connections -->
+
+                <line
+                    class="connection"
+                    x1="120"
+                    y1="300"
+                    x2="350"
+                    y2="300"
+                />
+
+                <line
+                    class="connection"
+                    x1="350"
+                    y1="300"
+                    x2="580"
+                    y2="180"
+                />
+
+                <line
+                    class="connection"
+                    x1="350"
+                    y1="300"
+                    x2="580"
+                    y2="420"
+                />
+
+
+                <!-- US SPACE FORCE -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'U.S. Space Force / Space-Track',
+                   'Conjunction screening',
+                   'The supplied orbital research describes extensive conjunction screening and the generation of Conjunction Data Messages. The paper states that the U.S. Space Force performs all-vs-all propagations for screening.',
+                   'CURRENT SYSTEM'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="120"
+                        cy="300"
+                        r="48"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="120"
+                        y="297"
+                        text-anchor="middle"
+                    >
+                        SPACE-TRACK
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="120"
+                        y="311"
+                        text-anchor="middle"
+                    >
+                        SCREENING
+                    </text>
+
+                </g>
+
+
+                <!-- OPERATOR -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'Spacecraft Operator',
+                   'Human decision layer',
+                   'The orbital review describes operators receiving conjunction information, reviewing the data, performing additional analysis, and deciding whether to maneuver.',
+                   'CURRENT SYSTEM'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="350"
+                        cy="300"
+                        r="55"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="350"
+                        y="297"
+                        text-anchor="middle"
+                    >
+                        OPERATOR
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="350"
+                        y="311"
+                        text-anchor="middle"
+                    >
+                        DECISION
+                    </text>
+
+                </g>
+
+
+                <!-- NASA -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'NASA CARA',
+                   'Conjunction risk assessment',
+                   'NASA CARA is described in the supplied review as a system used to process ephemeris data, identify close approaches, assess collision risk, and support collision-avoidance planning.',
+                   'CURRENT SYSTEM'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="580"
+                        cy="180"
+                        r="47"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="580"
+                        y="177"
+                        text-anchor="middle"
+                    >
+                        NASA CARA
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="580"
+                        y="191"
+                        text-anchor="middle"
+                    >
+                        RISK
+                    </text>
+
+                </g>
+
+
+                <!-- SPACEX -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'SpaceX / Starlink',
+                   'Documented constellation example',
+                   'The supplied review discusses Starlink as an example of a large constellation and reports a collision-avoidance threshold and maneuver frequency attributed to SpaceX. These values are source-reported, not live telemetry.',
+                   'CURRENT SYSTEM'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="580"
+                        cy="420"
+                        r="47"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="580"
+                        y="417"
+                        text-anchor="middle"
+                    >
+                        SPACEX
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="580"
+                        y="431"
+                        text-anchor="middle"
+                    >
+                        STARLINK
+                    </text>
+
+                </g>
+
+
+            </svg>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="control"
+                onclick="zoom('current',1.15)"
+            >
+                +
+            </button>
+
+            <button
+                class="control"
+                onclick="zoom('current',0.87)"
+            >
+                −
+            </button>
+
+            <button
+                class="control"
+                onclick="resetZoom('current')"
+            >
+                R
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="description">
+
+        <div class="description-label">
+            HOW IT CURRENTLY OPERATES
+        </div>
+
+        <p>
+
+            Conjunction screening identifies potential
+            close approaches. Information is passed through
+            assessment systems and operators, who evaluate
+            the encounter and determine whether a
+            collision-avoidance maneuver is required.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- MYCELIAL SYSTEM -->
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <div class="panel-number">
+                02 / PROPOSED
+            </div>
+
+            <div class="panel-title">
+                Mycelial Coordination
+            </div>
+
+        </div>
+
+        <div class="panel-status">
+            SIMULATION
+        </div>
+
+    </div>
+
+
+    <div class="network"
+         id="mycelialNetwork">
+
+        <div class="network-inner"
+             id="mycelialInner">
+
+            <svg viewBox="0 0 700 650">
+
+
+                <!-- distributed connections -->
+
+                <line
+                    class="connection"
+                    x1="350"
+                    y1="130"
+                    x2="180"
+                    y2="270"
+                />
+
+                <line
+                    class="connection"
+                    x1="350"
+                    y1="130"
+                    x2="520"
+                    y2="270"
+                />
+
+                <line
+                    class="connection"
+                    x1="180"
+                    y1="270"
+                    x2="350"
+                    y2="360"
+                />
+
+                <line
+                    class="connection"
+                    x1="520"
+                    y1="270"
+                    x2="350"
+                    y2="360"
+                />
+
+                <line
+                    class="connection"
+                    x1="350"
+                    y1="360"
+                    x2="190"
+                    y2="500"
+                />
+
+                <line
+                    class="connection"
+                    x1="350"
+                    y1="360"
+                    x2="510"
+                    y2="500"
+                />
+
+                <line
+                    class="connection"
+                    x1="190"
+                    y1="500"
+                    x2="510"
+                    y2="500"
+                />
+
+
+                <!-- SIGNAL PATHS -->
+
+                <circle
+                    class="signal"
+                    cx="350"
+                    cy="130"
+                    r="3"
+                >
+
+                    <animateMotion
+                        dur="3s"
+                        repeatCount="indefinite"
+                        path="M0,0 L-170,140 L0,230"
+                    />
+
+                </circle>
+
+
+                <circle
+                    class="signal"
+                    cx="350"
+                    cy="130"
+                    r="3"
+                >
+
+                    <animateMotion
+                        dur="4s"
+                        repeatCount="indefinite"
+                        path="M0,0 L170,140 L0,230"
+                    />
+
+                </circle>
+
+
+                <!-- SPACECRAFT A -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'Spacecraft A',
+                   'Local sensing node',
+                   'In the proposed architecture, spacecraft can contribute local state information to a distributed coordination network rather than relying on one central decision node.',
+                   'MYCELIAL MODEL'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="350"
+                        cy="130"
+                        r="43"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="350"
+                        y="127"
+                        text-anchor="middle"
+                    >
+                        SC-A
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="350"
+                        y="141"
+                        text-anchor="middle"
+                    >
+                        LOCAL NODE
+                    </text>
+
+                </g>
+
+
+                <!-- SPACECRAFT B -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'Spacecraft B',
+                   'Local sensing node',
+                   'Each spacecraft can evaluate local encounter conditions and exchange network signals with neighboring nodes.',
+                   'MYCELIAL MODEL'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="180"
+                        cy="270"
+                        r="43"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="180"
+                        y="267"
+                        text-anchor="middle"
+                    >
+                        SC-B
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="180"
+                        y="281"
+                        text-anchor="middle"
+                    >
+                        LOCAL NODE
+                    </text>
+
+                </g>
+
+
+                <!-- AI -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'AI Coordination Layer',
+                   'Distributed computational agent',
+                   'The AI layer is an engineering component of the proposed architecture. It can analyze local state, network state, uncertainty, and coordination constraints without becoming the sole central authority.',
+                   'MYCELIAL MODEL'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="520"
+                        cy="270"
+                        r="43"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="520"
+                        y="267"
+                        text-anchor="middle"
+                    >
+                        AI
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="520"
+                        y="281"
+                        text-anchor="middle"
+                    >
+                        LOCAL MODEL
+                    </text>
+
+                </g>
+
+
+                <!-- NETWORK CORE -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'Adaptive Network',
+                   'Hyperbolic relationship layer',
+                   'The proposed network uses hyperbolic geometry as a mathematical representation of relationships between nodes. This is a computational design choice, not a claim that fungi literally perform hyperbolic computation.',
+                   'MYCELIAL MODEL'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="350"
+                        cy="360"
+                        r="58"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="350"
+                        y="356"
+                        text-anchor="middle"
+                    >
+                        NETWORK
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="350"
+                        y="371"
+                        text-anchor="middle"
+                    >
+                        ADAPTIVE / HYPERBOLIC
+                    </text>
+
+                </g>
+
+
+                <!-- OPERATOR -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'Human Operator',
+                   'Human-in-the-loop node',
+                   'The proposed model does not eliminate operators. Human oversight can remain part of the network while the architecture distributes sensing, analysis, and coordination.',
+                   'MYCELIAL MODEL'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="190"
+                        cy="500"
+                        r="43"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="190"
+                        y="497"
+                        text-anchor="middle"
+                    >
+                        HUMAN
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="190"
+                        y="511"
+                        text-anchor="middle"
+                    >
+                        OPERATOR
+                    </text>
+
+                </g>
+
+
+                <!-- SECOND AI -->
+
+                <g class="node"
+                   onclick="openDetail(
+                   'AI / Mission Model',
+                   'Network-level analysis',
+                   'A second computational node can evaluate broader network conditions and compare possible coordination outcomes.',
+                   'MYCELIAL MODEL'
+                   )">
+
+                    <circle
+                        class="node-circle"
+                        cx="510"
+                        cy="500"
+                        r="43"
+                    />
+
+                    <text
+                        class="node-label"
+                        x="510"
+                        y="497"
+                        text-anchor="middle"
+                    >
+                        AI
+                    </text>
+
+                    <text
+                        class="node-sub"
+                        x="510"
+                        y="511"
+                        text-anchor="middle"
+                    >
+                        ANALYSIS
+                    </text>
+
+                </g>
+
+            </svg>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="control"
+                onclick="zoom('mycelial',1.15)"
+            >
+                +
+            </button>
+
+            <button
+                class="control"
+                onclick="zoom('mycelial',0.87)"
+            >
+                −
+            </button>
+
+            <button
+                class="control"
+                onclick="resetZoom('mycelial')"
+            >
+                R
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="description">
+
+        <div class="description-label">
+            PROPOSED COMPUTATIONAL MODEL
+        </div>
+
+        <p>
+
+            Local sensing, adaptive network relationships,
+            distributed AI analysis, human oversight, and
+            hyperbolic network representation are combined
+            into a decentralized coordination architecture
+            inspired by properties documented in mycelial
+            systems.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+</section>
+
+
+
+<!-- ==================================================
+     METRICS
+================================================== -->
+
+<section class="metrics">
+
+    <div class="eyebrow">
+        COMPARATIVE EXPERIMENT
+    </div>
+
+    <div class="section-title">
+        Same environment.<br>
+        Different architecture.
+    </div>
+
+
+    <div class="metric-grid">
+
+
+        <div class="metric">
+
+            <div class="metric-name">
+                DECISION LOCATION
+            </div>
+
+            <div class="metric-value">
+                CENTRAL
+            </div>
+
+            <div class="metric-note">
+                Current architecture
+            </div>
+
+        </div>
+
+
+        <div class="metric">
+
+            <div class="metric-name">
+                NETWORK MODEL
+            </div>
+
+            <div class="metric-value">
+                DISTRIBUTED
+            </div>
+
+            <div class="metric-note">
+                Proposed architecture
+            </div>
+
+        </div>
+
+
+        <div class="metric">
+
+            <div class="metric-name">
+                HYPERBOLIC REPRESENTATION
+            </div>
+
+            <div class="metric-value">
+                ACTIVE
+            </div>
+
+            <div class="metric-note">
+                Experimental computational layer
+            </div>
+
+        </div>
+
+
+        <div class="metric">
+
+            <div class="metric-name">
+                HUMAN OVERSIGHT
+            </div>
+
+            <div class="metric-value">
+                BOTH
+            </div>
+
+            <div class="metric-note">
+                Architecture comparison
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     RESEARCH
+================================================== -->
+
+<section class="sources">
+
+    <div class="eyebrow">
+        RESEARCH FOUNDATION
+    </div>
+
+    <div class="section-title">
+        Sources behind the model
+    </div>
+
+
+    <div class="source-grid">
+
+
+        <a
+            class="source"
+            href="https://arxiv.org/pdf/2503.22555"
+            target="_blank"
+        >
+
+            <div class="source-type">
+                ORBITAL DYNAMICS
+            </div>
+
+            <h3>
+                CAMmary
+            </h3>
+
+            <p>
+                Spacecraft collision-avoidance,
+                conjunction assessment,
+                maneuver design, uncertainty,
+                autonomy, and operational architecture.
+            </p>
+
+        </a>
+
+
+        <a
+            class="source"
+            href="https://www.mdpi.com/2076-0752/15/4/69"
+            target="_blank"
+        >
+
+            <div class="source-type">
+                MYCELIUM
+            </div>
+
+            <h3>
+                Symbiotic Intelligence
+            </h3>
+
+            <p>
+                Distributed agency, environmental
+                responsiveness, interconnected fungal
+                networks, electrical activity, and
+                symbiotic intelligence.
+            </p>
+
+        </a>
+
+
+        <a
+            class="source"
+            href="https://arxiv.org/pdf/2512.18826"
+            target="_blank"
+        >
+
+            <div class="source-type">
+                MATHEMATICS
+            </div>
+
+            <h3>
+                Hyperbolic Graph Embeddings
+            </h3>
+
+            <p>
+                Hyperbolic representations of network
+                structure and relationships.
+            </p>
+
+        </a>
+
+
+        <a
+            class="source"
+            href="https://pubmed.ncbi.nlm.nih.gov/41355057/"
+            target="_blank"
+        >
+
+            <div class="source-type">
+                COMPUTATIONAL RESEARCH
+            </div>
+
+            <h3>
+                Hyperbolic Computation
+            </h3>
+
+            <p>
+                Additional mathematical and computational
+                basis for the hyperbolic component.
+            </p>
+
+        </a>
+
+
+        <a
+            class="source"
+            href="https://www.politesi.polimi.it/handle/10589/188499"
+            target="_blank"
+        >
+
+            <div class="source-type">
+                ORBITAL SIMULATION
+            </div>
+
+            <h3>
+                Orbital Interference
+            </h3>
+
+            <p>
+                Orbital close-approach detection,
+                simulation, and computational handling.
+            </p>
+
+        </a>
+
+
+        <a
+            class="source"
+            href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6964161"
+            target="_blank"
+        >
+
+            <div class="source-type">
+                MYCELIAL RESEARCH
+            </div>
+
+            <h3>
+                Mycelial Systems
+            </h3>
+
+            <p>
+                Research source supplied for the
+                biological coordination component.
+            </p>
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     DETAIL PANEL
+================================================== -->
+
+<div
+    class="detail"
+    id="detail"
+>
+
+    <button
+        class="close"
+        onclick="closeDetail()"
+    >
+        ×
+    </button>
+
+
+    <div
+        class="detail-kicker"
+        id="detailKicker"
+    >
+    </div>
+
+
+    <h2
+        id="detailTitle"
+    >
+    </h2>
+
+
+    <p
+        id="detailText"
+    >
+    </p>
+
+
+    <div
+        class="detail-meta"
+        id="detailMeta"
+    >
+    </div>
+
+</div>
+
+
+
+<!-- ==================================================
+     AI ASSISTANT
+================================================== -->
+
+<button
+    class="ai-button"
+    onclick="toggleAI()"
+>
+    ASK GPT / ANALYZE
+</button>
+
+
+<div
+    class="ai-panel"
+    id="aiPanel"
+>
+
+    <div class="ai-header">
+
+        <div class="ai-title">
+            RESEARCH ASSISTANT
+        </div>
+
+        <div class="ai-status">
+            GPT
+        </div>
+
+    </div>
+
+
+    <div
+        class="chat"
+        id="chat"
+    >
+
+        <div class="message ai">
+
+            I can analyze the two coordination
+            architectures, explain the research,
+            inspect simulation results, compare
+            assumptions, or explain individual nodes.
+
+        </div>
+
+    </div>
+
+
+    <div class="ai-input">
+
+        <input
+            id="aiInput"
+            type="text"
+            placeholder="Ask about the system..."
+            onkeydown="
+                if(event.key === 'Enter')
+                askAI()
+            "
+        >
+
+        <button
+            onclick="askAI()"
+        >
+            →
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* ==================================================
+   ZOOM
+================================================== */
+
+
+const zoomLevels = {
+
+    current: 1,
+
+    mycelial: 1
+
+};
+
+
+function zoom(system, multiplier) {
+
+    zoomLevels[system] *= multiplier;
+
+    zoomLevels[system] =
+        Math.max(
+            0.65,
+            Math.min(
+                2.5,
+                zoomLevels[system]
+            )
+        );
+
+
+    document.getElementById(
+        system + "Inner"
+    ).style.transform =
+        `scale(${zoomLevels[system]})`;
+
+}
+
+
+function resetZoom(system) {
+
+    zoomLevels[system] = 1;
+
+    document.getElementById(
+        system + "Inner"
+    ).style.transform =
+        "scale(1)";
+
+}
+
+
+/* ==================================================
+   NODE DETAILS
+================================================== */
+
+
+function openDetail(
+    title,
+    subtitle,
+    description,
+    system
+) {
+
+    document.getElementById(
+        "detailTitle"
+    ).textContent =
+        title;
+
+
+    document.getElementById(
+        "detailKicker"
+    ).textContent =
+        subtitle;
+
+
+    document.getElementById(
+        "detailText"
+    ).textContent =
+        description;
+
+
+    document.getElementById(
+        "detailMeta"
+    ).textContent =
+        system;
+
+
+    document.getElementById(
+        "detail"
+    ).classList.add("open");
+
+}
+
+
+function closeDetail() {
+
+    document.getElementById(
+        "detail"
+    ).classList.remove("open");
+
+}
+
+
+/* ==================================================
+   AI
+================================================== */
+
+
+function toggleAI() {
+
+    document
+        .getElementById("aiPanel")
+        .classList.toggle("open");
+
+}
+
+
+async function askAI() {
+
+    const input =
+        document.getElementById("aiInput");
+
+    const question =
+        input.value.trim();
+
+
+    if (!question)
+        return;
+
+
+    const chat =
+        document.getElementById("chat");
+
+
+    chat.innerHTML +=
+        `<div class="message user">
+            ${escapeHTML(question)}
+        </div>`;
+
+
+    input.value = "";
+
+
+    const thinking =
+        document.createElement("div");
+
+    thinking.className =
+        "message ai";
+
+    thinking.textContent =
+        "Analyzing...";
+
+    chat.appendChild(thinking);
+
+
+    try {
+
+        /*
+         * IMPORTANT:
+         *
+         * This calls your secure backend.
+         *
+         * DO NOT put your OpenAI API key
+         * directly into this HTML file.
+         */
+
+        const response =
+            await fetch("/api/ask", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    question: question,
+
+                    context: {
+
+                        architecture:
+                            "centralized vs distributed",
+
+                        currentSystem:
+                            "spacecraft collision avoidance",
+
+                        proposedSystem:
+                            "mycelium-inspired hyperbolic coordination",
+
+                        sources: [
+                            "CAMmary 2025",
+                            "Symbiotic Intelligence 2026",
+                            "Hyperbolic Graph Embeddings",
+                            "Orbital Interference"
+                        ]
+
+                    }
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        thinking.textContent =
+            data.answer ||
+            "No response returned.";
+
+    }
+
+    catch(error) {
+
+        thinking.textContent =
+            "The GPT backend is not connected yet.";
+
+    }
+
+
+    chat.scrollTop =
+        chat.scrollHeight;
+
+}
+
+
+function escapeHTML(text) {
+
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
