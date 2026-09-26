@@ -1,0 +1,86 @@
+name: Build C++ and Deploy Research Interface
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+
+      - name: Install Emscripten
+        uses: emscripten-core/setup-emsdk@v15
+        with:
+          version: 5.0.1
+
+
+      - name: Verify Emscripten
+        run: emcc --version
+
+
+      - name: Create build directory
+        run: mkdir -p public
+
+
+      - name: Copy website
+        run: cp index.html public/index.html
+
+
+      - name: Compile C++ simulation
+        run: |
+          em++ simulation.cpp \
+            -O3 \
+            -std=c++17 \
+            -sWASM=1 \
+            -sMODULARIZE=1 \
+            -sEXPORT_NAME='MycelialModule' \
+            -sEXPORTED_FUNCTIONS='["_reset_simulation","_step_simulation","_get_node_count","_get_node_x","_get_node_y","_get_node_risk","_get_node_signal","_get_edge_count","_get_edge_a","_get_edge_b","_get_edge_strength","_get_hyperbolic_distance","_get_centralized_score","_get_distributed_score","_get_time"]' \
+            -sEXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
+            -o public/simulation.js
+
+
+      - name: Create Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./public
+
+
+  deploy:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
