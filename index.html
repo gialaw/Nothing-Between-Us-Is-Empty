@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                                                                                                                                                                 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -452,87 +452,6 @@ svg {
     text-align: right;
 }
 
-/* GPT */
-
-.assistant {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    z-index: 90;
-}
-
-.assistant-panel {
-    width: 390px;
-    height: 470px;
-    background: #0c1014;
-    border: 1px solid #454c53;
-    margin-bottom: 8px;
-    padding: 20px;
-    display: none;
-}
-
-.assistant-panel.open {
-    display: flex;
-    flex-direction: column;
-}
-
-.assistant-heading {
-    font-size: 23px;
-    margin-bottom: 5px;
-}
-
-.assistant-context {
-    font-family: Arial, sans-serif;
-    color: #717982;
-    font-size: 8px;
-    letter-spacing: 1px;
-    margin-bottom: 13px;
-}
-
-.assistant-output {
-    flex: 1;
-    overflow-y: auto;
-    border-top: 1px solid #30343a;
-    border-bottom: 1px solid #30343a;
-    padding: 14px 0;
-    color: #aab0b6;
-    font-size: 14px;
-    line-height: 1.55;
-    white-space: pre-wrap;
-}
-
-.assistant-form {
-    display: flex;
-    margin-top: 12px;
-}
-
-.assistant-form input {
-    flex: 1;
-    background: #151a1f;
-    border: 1px solid #3d444b;
-    color: #eee;
-    padding: 11px;
-    outline: none;
-}
-
-.assistant-form button {
-    border: 0;
-    background: #d5cdbc;
-    color: #101214;
-    width: 45px;
-}
-
-.assistant-button {
-    float: right;
-    border: 1px solid #c6bdab;
-    background: #c6bdab;
-    color: #101214;
-    padding: 13px 17px;
-    font-family: Arial, sans-serif;
-    font-size: 9px;
-    letter-spacing: 1.2px;
-}
-
 /* MOBILE */
 
 @media (max-width: 950px) {
@@ -557,9 +476,6 @@ svg {
         border-top: 1px solid #30343a;
     }
 
-    .assistant-panel {
-        width: min(390px, calc(100vw - 30px));
-    }
 
     .header,
     .research {
@@ -1231,55 +1147,6 @@ svg {
 </aside>
 
 
-<!-- GPT ASSISTANT -->
-
-<div class="assistant">
-
-    <div class="assistant-panel"
-         id="assistantPanel">
-
-        <div class="assistant-heading">
-            Research Assistant
-        </div>
-
-        <div class="assistant-context"
-             id="assistantContext">
-            NO NODE SELECTED
-        </div>
-
-        <div class="assistant-output"
-             id="assistantOutput">
-            Select a node and ask for analysis.
-
-            The assistant is designed to distinguish
-            documented research from experimental
-            model assumptions.
-        </div>
-
-        <form class="assistant-form"
-              onsubmit="askAssistant(event)">
-
-            <input id="assistantInput"
-                   autocomplete="off"
-                   placeholder="Analyze this system...">
-
-            <button type="submit">
-                →
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <button class="assistant-button"
-            onclick="toggleAssistant()">
-        GPT RESEARCH ASSISTANT
-    </button>
-
-</div>
-
-
 <script>
 
 /* ============================================================
@@ -1496,8 +1363,6 @@ function selectNode(id) {
 
     document.getElementById("drawer").classList.add("open");
 
-    document.getElementById("assistantContext").textContent =
-        "SELECTED: " + data.title;
 }
 
 
@@ -1557,8 +1422,6 @@ function selectSimulationNode(index) {
 
     document.getElementById("drawer").classList.add("open");
 
-    document.getElementById("assistantContext").textContent =
-        "SELECTED: " + (names[i] || "NODE");
 }
 
 
@@ -1979,112 +1842,6 @@ function loadSimulationEngine() {
 
 
     document.body.appendChild(script);
-}
-
-
-/* ============================================================
-   GPT ASSISTANT
-   ============================================================ */
-
-function toggleAssistant() {
-
-    document.getElementById("assistantPanel")
-        .classList.toggle("open");
-
-}
-
-
-async function askAssistant(event) {
-
-    event.preventDefault();
-
-    const input =
-        document.getElementById("assistantInput");
-
-    const output =
-        document.getElementById("assistantOutput");
-
-    const question =
-        input.value.trim();
-
-    if (!question) return;
-
-
-    output.textContent =
-        "Analyzing...";
-
-
-    const metrics = {
-
-        nodes:
-            document.getElementById("nodeMetric").textContent,
-
-        edges:
-            document.getElementById("edgeMetric").textContent,
-
-        distributedScore:
-            document.getElementById("distributedMetric").textContent,
-
-        simulationTime:
-            document.getElementById("timeMetric").textContent
-
-    };
-
-
-    try {
-
-        const response =
-            await fetch(
-                "https://gia-research-assistant.renaigiana.workers.dev",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-
-                        question,
-
-                        selectedNode,
-
-                        metrics
-
-                    })
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Assistant request failed"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        output.textContent =
-            data.answer ||
-            "No answer returned.";
-
-
-    } catch (error) {
-
-        output.textContent =
-            "GPT backend is not connected yet. " +
-            "Replace YOUR-WORKER.workers.dev with " +
-            "your deployed Cloudflare Worker URL.";
-
-    }
-
 }
 
 
